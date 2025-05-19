@@ -6,6 +6,8 @@
 
 package com.nphausg.app.embeddedserver.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -56,6 +58,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.masewsg.app.ui.ComposeApp
 import com.masewsg.app.ui.components.ThemePreviews
@@ -75,6 +79,8 @@ private val getRunningServerInfo = { ticks: Int ->
 
 class MainActivity : AppCompatActivity() {
 
+    private val REQUEST_CODE_STORAGE = 123
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -88,6 +94,21 @@ class MainActivity : AppCompatActivity() {
         // including IME animations, and go edge-to-edge
         // This also sets up the initial system bar style based on the platform theme
         // enableEdgeToEdge()
+        EmbeddedServer.init(applicationContext)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                REQUEST_CODE_STORAGE
+            )
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                REQUEST_CODE_STORAGE
+            )
+        }
         setContent {
             ComposeTheme {
                 ComposeApp {
@@ -184,6 +205,16 @@ private fun MainScreen(modifier: Modifier = Modifier) {
                     color = Color.Black,
                     textAlign = TextAlign.Start,
                     text = String.format("STATIC: %s/static", EmbeddedServer.host),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+
+            Row {
+                Icon(imageVector = ComposeIcons.PlayArrow, contentDescription = null)
+                Text(
+                    color = Color.Black,
+                    textAlign = TextAlign.Start,
+                    text = String.format("GET: %s/explorer", EmbeddedServer.host),
                     style = MaterialTheme.typography.titleMedium,
                 )
             }
