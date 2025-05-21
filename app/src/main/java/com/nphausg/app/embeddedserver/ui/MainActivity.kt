@@ -12,31 +12,22 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,18 +36,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -68,9 +53,7 @@ import com.masewsg.app.ui.components.button.ComposeOutlinedButton
 import com.masewsg.app.ui.components.icon.ComposeIcons
 import com.masewsg.app.ui.components.theme.ComposeTheme
 import com.nphausg.app.embeddedserver.EmbeddedServer
-import com.nphausg.app.embeddedserver.R
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 private val getRunningServerInfo = { ticks: Int ->
@@ -112,7 +95,15 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ComposeTheme {
                 ComposeApp {
-                    MainScreen()
+                    BoxWithConstraints {
+                        val dynamicPadding = if (maxWidth < 400.dp) 8.dp else 32.dp
+                        MainScreen(
+                            modifier = Modifier
+                                .padding(dynamicPadding)
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                        )
+                    }
                 }
             }
         }
@@ -150,20 +141,16 @@ private fun MainScreen(modifier: Modifier = Modifier) {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(
-            space = 20.dp,
-            alignment = Alignment.CenterVertically
-        )
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
 
         val reusedModifier = Modifier.weight(1f)
 
         Spacer(modifier = reusedModifier)
         AnimatedLogo()
-        Spacer(modifier = Modifier.weight(0.1f))
         Column(
             verticalArrangement = Arrangement.spacedBy(
                 space = 20.dp,
@@ -173,46 +160,17 @@ private fun MainScreen(modifier: Modifier = Modifier) {
             Row {
                 Icon(imageVector = ComposeIcons.PlayArrow, contentDescription = null)
                 Text(
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Start,
                     text = String.format("GET: %s", EmbeddedServer.host),
                     style = MaterialTheme.typography.titleMedium,
                 )
             }
-            Row {
-                Icon(imageVector = ComposeIcons.PlayArrow, contentDescription = null)
-                Text(
-                    color = Color.Black,
-                    textAlign = TextAlign.Start,
-                    text = String.format("GET: %s/fruits", EmbeddedServer.host),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
-
-            Row(modifier = Modifier) {
-                Icon(imageVector = ComposeIcons.PlayArrow, contentDescription = null)
-                Text(
-                    color = Color.Black,
-                    textAlign = TextAlign.Start,
-                    text = String.format("GET: %s/fruits/{id}", EmbeddedServer.host),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
 
             Row {
                 Icon(imageVector = ComposeIcons.PlayArrow, contentDescription = null)
                 Text(
-                    color = Color.Black,
-                    textAlign = TextAlign.Start,
-                    text = String.format("STATIC: %s/static", EmbeddedServer.host),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
-
-            Row {
-                Icon(imageVector = ComposeIcons.PlayArrow, contentDescription = null)
-                Text(
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Start,
                     text = String.format("GET: %s/explorer", EmbeddedServer.host),
                     style = MaterialTheme.typography.titleMedium,
@@ -248,15 +206,6 @@ private fun MainScreen(modifier: Modifier = Modifier) {
             )
         }
 
-        Column(modifier = Modifier.height(8.dp)) {
-            if (hasStarted) {
-                LinearProgressIndicator(
-                    modifier = Modifier.width(64.dp),
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                )
-            }
-        }
         Text(
             modifier = Modifier.graphicsLayer {
                 if (hasStarted) {
@@ -264,7 +213,7 @@ private fun MainScreen(modifier: Modifier = Modifier) {
                     scaleY = value
                 }
             },
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             text = if (hasStarted) {
                 getRunningServerInfo(ticks)

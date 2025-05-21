@@ -16,7 +16,6 @@ import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.HttpStatusCode.Companion.PartialContent
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
@@ -46,14 +45,13 @@ object EmbeddedServer {
     private const val PORT = 6868
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private const val FILE_NAME = "file.jpg"
-    private const val MP3_FILE_NAME = "bye_bye_bye_nsync.mp3"
 
     private lateinit var appContext: Context
     private lateinit var filesDir: File
 
     fun init(context: Context) {
         appContext = context.applicationContext
-        filesDir = File("/storage/emulated/0/Pictures")
+        filesDir = context.getExternalFilesDir(null) ?: context.filesDir
     }
 
     private val server by lazy {
