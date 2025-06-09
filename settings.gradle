@@ -5,7 +5,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "android.embeddedserver"
+rootProject.name = "OML Data Transfer"
 include ':app'
 // Modules
 include ':foundation-ui'

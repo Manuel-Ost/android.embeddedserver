@@ -4,9 +4,9 @@
  * Last modified 11/19/22, 3:58 PM
  */
 
-package com.nphausg.app.embeddedserver.data.models
+package com.manuelost.app.omldatatransfer.data.models
 
-import com.nphausg.app.embeddedserver.data.Database
+import com.manuelost.app.omldatatransfer.data.Database
 import kotlinx.serialization.Serializable
 import java.util.UUID
 

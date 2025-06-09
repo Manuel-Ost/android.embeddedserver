@@ -4,7 +4,7 @@
  * Last modified 11/19/22, 3:58 PM
  */
 
-package com.nphausg.app.embeddedserver.ui
+package com.manuelost.app.omldatatransfer.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -52,7 +52,7 @@ import com.masewsg.app.ui.components.button.ComposeButton
 import com.masewsg.app.ui.components.button.ComposeOutlinedButton
 import com.masewsg.app.ui.components.icon.ComposeIcons
 import com.masewsg.app.ui.components.theme.ComposeTheme
-import com.nphausg.app.embeddedserver.EmbeddedServer
+import com.manuelost.app.omldatatransfer.EmbeddedServer
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 

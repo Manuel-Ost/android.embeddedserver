@@ -4,7 +4,7 @@
  * Last modified 11/19/22, 3:58 PM
  */
 
-package com.nphausg.app.embeddedserver.utils
+package com.manuelost.app.omldatatransfer.utils
 
 import java.net.InetAddress
 import java.net.NetworkInterface

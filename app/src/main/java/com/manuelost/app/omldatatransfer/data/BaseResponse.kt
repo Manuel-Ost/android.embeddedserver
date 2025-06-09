@@ -4,7 +4,7 @@
  * Last modified 04/02/2022, 23:02
  */
 
-package com.nphausg.app.embeddedserver.data
+package com.manuelost.app.omldatatransfer.data
 
 import kotlinx.serialization.Serializable
 

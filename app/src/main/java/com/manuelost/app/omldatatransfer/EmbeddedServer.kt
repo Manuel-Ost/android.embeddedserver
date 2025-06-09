@@ -4,14 +4,14 @@
  * Last modified 4/10/24, 7:04 PM
  */
 
-package com.nphausg.app.embeddedserver
+package com.manuelost.app.omldatatransfer
 
 import android.content.Context
 import android.os.Build
-import com.nphausg.app.embeddedserver.data.Database
-import com.nphausg.app.embeddedserver.data.models.Cart
-import com.nphausg.app.embeddedserver.utils.FileUtils
-import com.nphausg.app.embeddedserver.utils.NetworkUtils
+import com.manuelost.app.omldatatransfer.data.Database
+import com.manuelost.app.omldatatransfer.data.models.Cart
+import com.manuelost.app.omldatatransfer.utils.FileUtils
+import com.manuelost.app.omldatatransfer.utils.NetworkUtils
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -29,6 +29,7 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondFile
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.CoroutineScope
@@ -140,6 +141,20 @@ object EmbeddedServer {
                             ).toString()
                         )
                         call.respondFile(file)
+                        ioScope.launch {
+                            kotlinx.coroutines.delay(2000)
+                            file.delete()
+                        }
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, "Datei nicht gefunden")
+                    }
+                }
+                delete("/delete/{subdir...}") {
+                    val subdir = call.parameters.getAll("subdir")?.joinToString(File.separator) ?: ""
+                    val file = File(filesDir, subdir)
+                    if (file.exists() && file.isFile) {
+                        file.delete()
+                        call.respond(HttpStatusCode.OK, "Datei gelöscht")
                     } else {
                         call.respond(HttpStatusCode.NotFound, "Datei nicht gefunden")
                     }

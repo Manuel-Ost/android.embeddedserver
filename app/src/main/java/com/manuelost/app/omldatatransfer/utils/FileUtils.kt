@@ -4,7 +4,7 @@
  * Last modified 4/13/24, 11:46 AM
  */
 
-package com.nphausg.app.embeddedserver.utils
+package com.manuelost.app.omldatatransfer.utils
 
 import kotlinx.serialization.json.Json
 

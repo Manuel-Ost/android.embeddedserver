@@ -6,18 +6,22 @@ plugins {
 
 android {
 
-    namespace 'com.nphausg.app.embeddedserver'
+    namespace 'com.manuelost.app.omldatatransfer'
 
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.nphausg.app.embeddedserver"
+        applicationId "com.manuelost.app.omldatatransfer"
         minSdk 21
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'arm64-v8a' // MSDK only supports arm64-v8a architecture
+        }
     }
 
     buildTypes {
@@ -40,6 +44,38 @@ android {
         resources {
             excludes += ['META-INF/*', 'META-INF/licenses/*', '**/attach_hotspot_windows.dll']
         }
+
+        // MSDK related so library
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+
+        doNotStrip "*/*/libconstants.so"
+        doNotStrip "*/*/libdji_innertools.so"
+        doNotStrip "*/*/libdjibase.so"
+        doNotStrip "*/*/libDJICSDKCommon.so"
+        doNotStrip "*/*/libDJIFlySafeCore-CSDK.so"
+        doNotStrip "*/*/libdjifs_jni-CSDK.so"
+        doNotStrip "*/*/libDJIRegister.so"
+        doNotStrip "*/*/libdjisdk_jni.so"
+        doNotStrip "*/*/libDJIUpgradeCore.so"
+        doNotStrip "*/*/libDJIUpgradeJNI.so"
+        doNotStrip "*/*/libDJIWaypointV2Core-CSDK.so"
+        doNotStrip "*/*/libdjiwpv2-CSDK.so"
+        doNotStrip "*/*/libFlightRecordEngine.so"
+        doNotStrip "*/*/libvideo-framing.so"
+        doNotStrip "*/*/libwaes.so"
+        doNotStrip "*/*/libagora-rtsa-sdk.so"
+        doNotStrip "*/*/libc++.so"
+        doNotStrip "*/*/libc++_shared.so"
+        doNotStrip "*/*/libmrtc_28181.so"
+        doNotStrip "*/*/libmrtc_agora.so"
+        doNotStrip "*/*/libmrtc_core.so"
+        doNotStrip "*/*/libmrtc_core_jni.so"
+        doNotStrip "*/*/libmrtc_data.so"
+        doNotStrip "*/*/libmrtc_log.so"
+        doNotStrip "*/*/libmrtc_onvif.so"
+        doNotStrip "*/*/libmrtc_rtmp.so"
+        doNotStrip "*/*/libmrtc_rtsp.so"
     }
     buildFeatures {
         compose true
@@ -86,4 +122,16 @@ dependencies {
 
     // UI
     implementation project(':foundation-ui')
+
+    //DJI SDK
+    //implementation project(":android-sdk-v5-uxsdk")
+//
+    //implementation "com.dji:dji-sdk-v5-aircraft:5.14.0"
+    //compileOnly "com.dji:dji-sdk-v5-aircraft-provided:5.14.0"
+//
+    //implementation 'androidx.appcompat:appcompat:1.6.1'
+    //implementation 'com.google.android.material:material:1.8.0'
+    //testImplementation 'junit:junit:4.13.2'
+    //androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    //androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

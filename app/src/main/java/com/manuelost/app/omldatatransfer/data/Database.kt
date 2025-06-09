@@ -4,10 +4,9 @@
  * Last modified 11/19/22, 3:58 PM
  */
 
-package com.nphausg.app.embeddedserver.data
+package com.manuelost.app.omldatatransfer.data
 
-import com.nphausg.app.embeddedserver.data.models.Fruit
-import java.util.UUID
+import com.manuelost.app.omldatatransfer.data.models.Fruit
 
 object Database {
 
