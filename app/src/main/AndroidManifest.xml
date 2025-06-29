@@ -31,9 +31,13 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
+                android:resource="@xml/accessory_filter" />
         </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -48,8 +52,8 @@
             </intent-filter>
 
             <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_provider_paths" />
+                android:name="com.dji.sdk.API_KEY"
+                android:resource="65830f32625e38ca6bc92356" />
         </provider>
     </application>
 

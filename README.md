@@ -17,9 +17,9 @@ A Remote Data Transfer Application for use with DJI Drones, forked from the [And
 
 ## 🍲 Static resource
 
-Config | Demo |
---- | --- |
-<img src="docs/static_config.jpg"> | <img src="docs/static_demo.jpg"> |
+| Config                             | Demo                             |
+|------------------------------------|----------------------------------|
+| <img src="docs/static_config.jpg"> | <img src="docs/static_demo.jpg"> |
 
 ```kotlin
     staticResources("/static", ""){
@@ -29,14 +29,12 @@ Config | Demo |
 
 ## 🍲 Screenshots
 
-<h4 align="center">
+| Fruits                      | Detail                      |
+|-----------------------------|-----------------------------|
+| <img src="docs/fruits.jpg"> | <img src="docs/detail.jpg"> |
 
-Fruits | Detail |
---- | --- |
-<img src="docs/fruits.jpg"> | <img src="docs/detail.jpg"> |
-
-Device | Connect |
---- | --- |
-<img src="docs/demo.gif"> | <img src="docs/edge_get.gif"> |
+| Device                    | Connect                       |
+|---------------------------|-------------------------------|
+| <img src="docs/demo.gif"> | <img src="docs/edge_get.gif"> |
 
 ## README will be updated as the Project progresses...

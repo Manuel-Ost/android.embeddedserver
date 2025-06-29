@@ -2,7 +2,10 @@
 #
 agp = "8.5.2"
 appcompat = "1.7.0"
+appcompatVersion = "1.7.1"
 coreSplashscreen = "1.0.1"
+djiSdkV5Aircraft = "5.15.0"
+djiSdkV5AircraftProvided = "5.15.0"
 gradle = "8.10.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -23,13 +26,18 @@ ktorServerNetty = "2.3.10"
 lifecycleRuntimeKtx = "2.8.5"
 activityCompose = "1.9.2"
 composeBom = "2024.09.00"
+material = "1.12.0"
 mockitoCore = "3.12.4"
 mockitoInline = "3.11.2"
 navigationCompose = "2.8.0"
 
 [libraries]
 # Kotlin
+androidx-appcompat-v171 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation" }
+dji-sdk-v5-aircraft = { module = "com.dji:dji-sdk-v5-aircraft", version.ref = "djiSdkV5Aircraft" }
+dji-sdk-v5-aircraft-provided = { module = "com.dji:dji-sdk-v5-aircraft-provided", version.ref = "djiSdkV5AircraftProvided" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
 material3 = { module = "androidx.compose.material3:material3" }
 tools-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 tools-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }

@@ -55,6 +55,7 @@ import com.masewsg.app.ui.components.theme.ComposeTheme
 import com.manuelost.app.omldatatransfer.EmbeddedServer
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
+import dji.v5.manager.datacenter.media.VideoFeeder
 
 private val getRunningServerInfo = { ticks: Int ->
     "The server is running on: ${Build.MODEL} at ${EmbeddedServer.host} -> (${ticks}s ....)"
@@ -63,6 +64,28 @@ private val getRunningServerInfo = { ticks: Int ->
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_CODE_STORAGE = 123
+    private lateinit var encoder: VideoEncoder
+    private lateinit var videoDataListener: VideoFeeder.VideoDataListener
+
+    override fun onStart() {
+        super.onStart()
+        encoder = VideoEncoder("/storage/emulated/0/DCIM/dji_record.mp4")
+        encoder.initEncoder(width = 1920, height = 1080, frameRate = 30, bitRate = 5_000_000)
+
+        videoDataListener = VideoFeeder.VideoDataListener { videoBuffer, size ->
+            val h264Data = ByteArray(size)
+            videoBuffer.get(h264Data)
+            videoBuffer.rewind()
+            encoder.encodeFrame(ByteBuffer.wrap(h264Data), System.nanoTime() / 1000)
+        }
+        VideoFeeder.getInstance().primaryVideoFeed.addVideoDataListener(videoDataListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        VideoFeeder.getInstance().primaryVideoFeed.removeVideoDataListener(videoDataListener)
+        encoder.release()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
