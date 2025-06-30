@@ -10,6 +10,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.core.LinearEasing
@@ -54,9 +55,12 @@ import com.masewsg.app.ui.components.icon.ComposeIcons
 import com.masewsg.app.ui.components.theme.ComposeTheme
 import com.manuelost.app.omldatatransfer.EmbeddedServer
 import com.manuelost.app.omldatatransfer.data.VideoEncoder
+import dji.sdk.keyvalue.value.common.ComponentIndexType
+import dji.v5.manager.interfaces.ICameraStreamManager
+import dji.v5.manager.datacenter.camera.StreamInfo
+import dji.v5.manager.SDKManager
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
-import dji.v5.manager.datacenter.media.VideoFeeder
 
 private val getRunningServerInfo = { ticks: Int ->
     "The server is running on: ${Build.MODEL} at ${EmbeddedServer.host} -> (${ticks}s ....)"
@@ -65,27 +69,34 @@ private val getRunningServerInfo = { ticks: Int ->
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_CODE_STORAGE = 123
+
     private lateinit var encoder: VideoEncoder
-    private lateinit var videoDataListener: VideoFeeder.VideoDataListener
+    private val cameraIndex = ComponentIndexType.LEFT_OR_MAIN
+    private var cameraStreamManagerInstance: ICameraStreamManager? = null
+
+    /** Listener that delivers every NAL unit coming from the aircraft */
+    private val streamListener = object : ICameraStreamManager.ReceiveStreamListener {
+        override fun onReceiveStream(
+            data: ByteArray, offset: Int, length: Int,
+            info: StreamInfo
+        ) = encoder.handleFrame(data, offset, length, info)
+    }
 
     override fun onStart() {
         super.onStart()
-        encoder = VideoEncoder("/storage/emulated/0/DCIM/dji_record.mp4")
-        encoder.initEncoder(width = 1920, height = 1080, frameRate = 30, bitRate = 5_000_000)
-
-        videoDataListener = VideoFeeder.VideoDataListener { videoBuffer, size ->
-            val h264Data = ByteArray(size)
-            videoBuffer.get(h264Data)
-            videoBuffer.rewind()
-            encoder.encodeFrame(ByteBuffer.wrap(h264Data), System.nanoTime() / 1000)
-        }
-        VideoFeeder.getInstance().primaryVideoFeed.addVideoDataListener(videoDataListener)
+        val outputPath = "/storage/emulated/0/DCIM/dji_record.mp4"
+        encoder = VideoEncoder(outputPath = outputPath)
+        cameraStreamManagerInstance?.addReceiveStreamListener(cameraIndex, streamListener)
     }
 
     override fun onStop() {
         super.onStop()
-        VideoFeeder.getInstance().primaryVideoFeed.removeVideoDataListener(videoDataListener)
-        encoder.release()
+
+        cameraStreamManagerInstance?.removeReceiveStreamListener(streamListener)
+
+        if (encoder != null) {
+            encoder?.release()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

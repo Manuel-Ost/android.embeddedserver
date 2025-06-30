@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.manuelost.app.omldatatransfer"
-        minSdk 21
+        minSdk 24
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
@@ -37,6 +37,13 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17
     }
+
+    // MSDK related so library
+    packagingOptions {
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    }
+
     packagingOptions {
         jniLibs {
             excludes += ['META-INF/*', 'META-INF/licenses/*']
@@ -44,10 +51,6 @@ android {
         resources {
             excludes += ['META-INF/*', 'META-INF/licenses/*', '**/attach_hotspot_windows.dll']
         }
-
-        // MSDK related to library
-        pickFirst 'lib/arm64-v8a/libc++_shared.so'
-        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
 
         doNotStrip "*/*/libconstants.so"
         doNotStrip "*/*/libdji_innertools.so"
@@ -76,8 +79,8 @@ android {
         doNotStrip "*/*/libmrtc_onvif.so"
         doNotStrip "*/*/libmrtc_rtmp.so"
         doNotStrip "*/*/libmrtc_rtsp.so"
-        exclude 'META-INF/rxjava.properties'
     }
+
     buildFeatures {
         compose true
     }
@@ -125,7 +128,6 @@ dependencies {
     implementation project(':foundation-ui')
 
     //DJI SDK
-
     implementation libs.dji.sdk.v5.aircraft
     compileOnly libs.dji.sdk.v5.aircraft.provided
 
